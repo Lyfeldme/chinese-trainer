@@ -1,0 +1,407 @@
+/* ============================================================
+   Базовые стили
+   ============================================================ */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px;
+  padding-top:    max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-left:   max(24px, env(safe-area-inset-left));
+  padding-right:  max(24px, env(safe-area-inset-right));
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Шапка
+   ============================================================ */
+.app__header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 60px 0 0px;   /* справа 60px — место под кнопку темы (40px) + отступ */
+}
+.app__title { font-size: 22px; font-weight: 700; line-height: 1.15; }
+.app__subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+.app__footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 24px;
+  min-height: 18px;
+}
+
+/* ============================================================
+   Основная карточка
+   ============================================================ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+}
+
+/* ============================================================
+   Информация о слове
+   ============================================================ */
+.word-info { text-align: center; margin-bottom: 20px; }
+
+.word-info__pinyin {
+  font-size: 20px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  word-break: break-word;
+  transition: color .25s;
+}
+
+.word-info__translation {
+  font-size: 17px;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+/* ============================================================
+   Иероглифы
+   ============================================================ */
+.chars {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.controls--extra { margin-top: 10px; }
+
+/* ============================================================
+   Секция со словами
+   ============================================================ */
+.list-section { margin-top: 32px; }
+
+.list-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.list-section__title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0;
+}
+
+.list-section__actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   Поиск
+   ============================================================ */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 17px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search__input {
+  width: 100%;
+  padding: 10px 40px 10px 38px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search__input::placeholder { color: var(--muted); opacity: .8; }
+.search__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, .15);
+}
+.search__input::-webkit-search-cancel-button { display: none; }
+
+.search__clear {
+  position: absolute;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s, transform .08s;
+  -webkit-tap-highlight-color: transparent;
+}
+.search__clear:hover  { background: var(--accent-soft); color: var(--accent); }
+.search__clear:active { transform: scale(.92); }
+.search__clear i { font-size: 16px; line-height: 1; }
+
+/* ============================================================
+   Сетка слов
+   ============================================================ */
+.word-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
+
+/* 1) Планшет (<= 900px) */
+@media (max-width: 900px) {
+  body { padding: 20px; }
+  .card { padding: 24px; }
+  .chars { gap: 12px; }
+}
+
+/* 2) Большой телефон (<= 720px) */
+@media (max-width: 720px) {
+  .list-section__header { flex-direction: column; align-items: stretch; }
+  .list-section__actions { justify-content: center; }
+}
+
+/* 3) Телефон (<= 600px) */
+@media (max-width: 600px) {
+  body {
+    padding: 14px;
+    padding-top:    max(14px, env(safe-area-inset-top));
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    padding-left:   max(14px, env(safe-area-inset-left));
+    padding-right:  max(14px, env(safe-area-inset-right));
+  }
+
+  .card { padding: 18px; border-radius: 14px; }
+
+  .app__header { padding: 0 40px; margin-bottom: 14px; }
+  .app__title { font-size: 20px; }
+  .app__subtitle { font-size: 13px; }
+
+  .word-info { margin-bottom: 14px; }
+  .word-info__pinyin { font-size: 18px; }
+  .word-info__translation { font-size: 15px; }
+
+  .chars { gap: 10px; margin: 18px 0; }
+
+  .controls { gap: 8px; }
+
+  .list-section { margin-top: 24px; }
+
+  .word-list {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+
+  .app__footer { margin-top: 18px; font-size: 12px; }
+}
+
+/* 4) Маленький телефон (<= 400px) */
+@media (max-width: 400px) {
+  body {
+    padding: 10px;
+    padding-top:    max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .card { padding: 14px; border-radius: 12px; }
+
+  .app__header { padding: 0 36px; }
+  .app__title { font-size: 18px; }
+  .app__subtitle { font-size: 12px; }
+
+  .chars { gap: 6px; margin: 14px 0; }
+
+  .word-list {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 6px;
+  }
+
+  .search__input {
+    font-size: 14px;
+    padding: 9px 36px 9px 34px;
+  }
+}
+
+/* 5) Очень маленький (<= 340px) */
+@media (max-width: 340px) {
+  body { padding: 8px; }
+  .card { padding: 12px; }
+  .app__title { font-size: 16px; }
+  .app__subtitle { font-size: 11px; }
+  .chars { gap: 4px; }
+}
+
+/* 6) Ландшафт на телефоне */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 8px;
+    padding-top:    max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .app__header { margin-bottom: 10px; }
+  .app__title { font-size: 16px; }
+  .app__subtitle { display: none; }
+  .word-info { margin-bottom: 10px; }
+  .chars { margin: 10px 0; gap: 8px; }
+  .card { padding: 14px; }
+  .list-section { margin-top: 16px; }
+}
+
+/* 7) Очень широкий экран (> 1440px) */
+@media (min-width: 1440px) {
+  .app { max-width: 1000px; }
+  .word-list {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+/* 8) Уважаем настройки пользователя */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Форма: заголовок секции «Пример употребления»
+   ============================================================ */
+.form__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.form__section-title i { font-size: 14px; }
+
+/* ============================================================
+   Большая подсказка (режим «Пропуски»)
+   ============================================================ */
+.quiz-hint__section {
+  padding: 10px 12px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.quiz-hint__section:first-of-type { margin-top: 0; }
+
+.quiz-hint__section--answer {
+  border: 1.5px dashed var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.quiz-hint__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.quiz-hint__label i { font-size: 13px; }
+
+.quiz-hint__value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  word-break: break-word;
+}
+
+.quiz-hint__answer {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  padding: 6px 0;
+  letter-spacing: 4px;
+}
+
+.quiz-hint__note {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Тёмная тема: аккуратный оттенок для секции «правильный иероглиф» */
+[data-theme="dark"] .quiz-hint__section--answer {
+  background: rgba(122, 156, 255, .12);
+}
+
+/* Фоллбэк для браузеров без поддержки color-mix() */
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+  .quiz-hint__section--answer {
+    background: rgba(79, 124, 255, .08);
+  }
+  [data-theme="dark"] .quiz-hint__section--answer {
+    background: rgba(122, 156, 255, .12);
+  }
+}

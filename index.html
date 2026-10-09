@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>Тренажер для изучения китайского языка</title>
+  <meta name="description" content="Тренажер для изучения китайского языка: порядок черт, письмо, память, обводка, викторина, диктант, пропуски и проверка предложений.">
+
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('hanzipath.theme.v1');
+        var t = (s === 'dark' || s === 'light')
+          ? s
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="中文">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%234f7cff' rx='20'/><text x='50' y='74' font-size='64' text-anchor='middle' fill='white' font-family='sans-serif'>汉</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%234f7cff' rx='36'/><text x='90' y='132' font-size='112' text-anchor='middle' fill='white' font-family='sans-serif'>汉</text></svg>">
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+<div class="app">
+  <header class="app__header">
+    <div class="app__brand">
+      <span class="app__panda" aria-hidden="true">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+          <circle cx="20" cy="22" r="13" fill="#1f2430"/>
+          <circle cx="80" cy="22" r="13" fill="#1f2430"/>
+          <circle cx="20" cy="22" r="7"  fill="#fff"/>
+          <circle cx="80" cy="22" r="7"  fill="#fff"/>
+
+          <ellipse cx="50" cy="55" rx="34" ry="30" fill="#fff" stroke="#1f2430" stroke-width="2"/>
+
+          <ellipse cx="36" cy="48" rx="9" ry="11" fill="#1f2430" transform="rotate(-15 36 48)"/>
+          <ellipse cx="64" cy="48" rx="9" ry="11" fill="#1f2430" transform="rotate(15 64 48)"/>
+
+          <circle cx="37" cy="49" r="3.4" fill="#fff"/>
+          <circle cx="63" cy="49" r="3.4" fill="#fff"/>
+          <circle cx="37.7" cy="49.6" r="1.4" fill="#1f2430"/>
+          <circle cx="63.7" cy="49.6" r="1.4" fill="#1f2430"/>
+
+          <ellipse cx="50" cy="62" rx="3.2" ry="2.4" fill="#1f2430"/>
+
+          <path d="M 44 68 Q 50 73 56 68" stroke="#1f2430" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <ellipse cx="22" cy="85" rx="8" ry="6" fill="#1f2430"/>
+          <ellipse cx="78" cy="85" rx="8" ry="6" fill="#1f2430"/>
+        </svg>
+      </span>
+      <div class="app__brand-text">
+        <p class="app__subtitle">Тренажер для изучения китайского языка</p>
+        <p class="app__chinese" lang="zh">学汉语，从汉字开始</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeToggle" aria-label="Сменить тему" title="Светлая / тёмная тема">
+      <i class="ri-moon-line" id="themeIcon"></i>
+    </button>
+  </header>
+
+  <main class="card">
+    <div id="wordView">
+      <div class="word-info">
+        <div class="word-info__pinyin" id="pinyin">—</div>
+        <div class="word-info__translation" id="translation">—</div>
+      </div>
+
+      <div class="chars" id="chars"></div>
+
+      <div class="controls controls--main" id="mainControls">
+        <div class="controls__row">
+          <button class="btn btn--secondary" id="btn-animate">
+            <i class="ri-play-circle-line"></i><span>Порядок черт</span>
+          </button>
+          <button class="btn btn--primary" id="btn-quiz">
+            <i class="ri-pencil-line"></i><span>Писать</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-quiz-memory">
+            <i class="ri-brain-line"></i><span>По памяти</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-trace">
+            <i class="ri-brush-line"></i><span>Обводить</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-audio">
+            <i class="ri-volume-up-line"></i><span>Озвучить</span>
+          </button>
+          <button class="btn btn--primary" id="btn-srs">
+            <i class="ri-repeat-line"></i><span>Повторение</span>
+            <span class="btn__badge" id="srsBadge" hidden>0</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-worksheets">
+            <i class="ri-file-paper-2-line"></i><span>Прописи</span>
+          </button>
+        </div>
+
+        <div class="controls__row">
+          <button class="btn btn--secondary" id="btn-mcq">
+            <i class="ri-file-list-line"></i><span>Проверка</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-dictation">
+            <i class="ri-headphone-line"></i><span>Диктант</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-cloze">
+            <i class="ri-file-text-line"></i><span>Пропуски</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-sentences">
+            <i class="ri-quill-pen-line"></i><span>Предложения</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-stats">
+            <i class="ri-bar-chart-line"></i><span>Статистика</span>
+          </button>
+        </div>
+
+        <div class="controls__row controls__row--nav">
+          <button class="btn btn--secondary" id="btn-prev">
+            <i class="ri-arrow-left-line"></i><span>Предыдущее</span>
+          </button>
+          <button class="btn btn--secondary" id="btn-next">
+            <span>Следующее</span><i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="controls controls--extra" id="extraControls" hidden></div>
+
+      <div class="status" id="status">Выберите слово ниже или нажмите «Писать»</div>
+    </div>
+
+    <div id="mcqView" hidden>
+      <div class="mcq">
+        <div class="mcq__head">
+          <div class="mcq__progress" id="mcqProgress">1 / 10</div>
+          <button class="mcq__close" id="mcqClose" aria-label="Выйти" title="Выйти">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+
+        <div class="mcq__bar"><div class="mcq__bar-fill" id="mcqBarFill"></div></div>
+
+        <div class="mcq__hint" id="mcqHint">Что означает?</div>
+        <div class="mcq__question" id="mcqQuestion">—</div>
+
+        <div class="quiz-tools" id="mcqTools" hidden>
+          <button type="button" class="quiz-tool" id="mcqAudio" title="Послушать вопрос">
+            <i class="ri-volume-up-line"></i><span>Послушать</span>
+          </button>
+          <button type="button" class="quiz-tool" id="mcqPinyin" title="Показать чтение">
+            <i class="ri-book-open-line"></i><span>Чтение</span>
+          </button>
+          <button type="button" class="quiz-tool" id="mcqTranslation" title="Показать перевод">
+            <i class="ri-translate-2"></i><span>Перевод</span>
+          </button>
+          <button type="button" class="quiz-tool" id="mcqHint2" title="Подсказка">
+            <i class="ri-lightbulb-line"></i><span>Подсказка</span>
+          </button>
+        </div>
+
+        <div class="quiz-hint" id="mcqHintPanel" hidden></div>
+
+        <div class="mcq__options" id="mcqOptions"></div>
+
+        <div class="mcq__status" id="mcqStatus"></div>
+      </div>
+
+      <div class="mcq-result" id="mcqResult" hidden>
+        <div class="mcq-result__icon" id="mcqResultIcon"><i class="ri-award-line"></i></div>
+        <div class="mcq-result__title" id="mcqResultTitle">Готово!</div>
+        <div class="mcq-result__score" id="mcqResultScore">0 / 10</div>
+        <div class="mcq-result__message" id="mcqResultMessage"></div>
+        <div class="mcq-result__actions">
+          <button class="btn btn--secondary" id="mcqExit">
+            <i class="ri-arrow-left-line"></i><span>К словам</span>
+          </button>
+          <button class="btn btn--primary" id="mcqRestart">
+            <i class="ri-refresh-line"></i><span>Ещё раз</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="list-section" id="listSection">
+    <div class="list-section__header">
+      <h2 class="list-section__title" id="listTitle">Словарик</h2>
+      <div class="list-section__actions" id="listActions"></div>
+    </div>
+
+    <div class="search">
+      <i class="ri-search-line search__icon" aria-hidden="true"></i>
+      <input
+        type="text"
+        id="searchInput"
+        class="search__input"
+        placeholder="Поиск по иероглифу, пиньиню или переводу"
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <button type="button" class="search__clear" id="searchClear" aria-label="Очистить" hidden>
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+    <div class="word-list" id="wordList"></div>
+  </section>
+
+  <footer class="app__footer">
+    <div class="app__footer-progress">
+      <span id="progress-info"></span>
+    </div>
+    <div class="app__footer-note">
+      <i class="ri-information-line" aria-hidden="true"></i>
+      <span>
+        Сервис может содержать неточности в переводах, чтении и разборе предложений.
+        Используйте его как вспомогательный тренажёр — будьте внимательны и сверяйтесь со словарём.
+      </span>
+    </div>
+    <div class="app__footer-links">
+      <a class="app__footer-link" href="https://hanziwriter.org/" target="_blank" rel="noopener noreferrer">
+        <i class="ri-external-link-line"></i>
+        <span>Hanzi Writer — библиотека анимации черт</span>
+      </a>
+    </div>
+  </footer>
+</div>
+
+<!-- Модалка: слово -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" id="modalBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+    <h3 class="modal__title" id="modalTitle">Добавить слово</h3>
+
+    <form class="form" id="wordForm" novalidate>
+      <label class="form__label">
+        <span>Иероглифы <em>*</em></span>
+        <input type="text" id="wordInput" maxlength="10" autocomplete="off" placeholder="например: 电影">
+      </label>
+
+      <label class="form__label">
+        <span>Пиньинь</span>
+        <input type="text" id="pinyinInput" maxlength="60" autocomplete="off" placeholder="например: diàn yǐng или dian4 ying3">
+      </label>
+
+      <label class="form__label">
+        <span>Перевод <em>*</em></span>
+        <input type="text" id="translationInput" maxlength="120" autocomplete="off" placeholder="например: кино">
+      </label>
+
+      <div class="form__section-title">
+        <i class="ri-chat-quote-line"></i>
+        <span>Пример употребления (необязательно)</span>
+      </div>
+
+      <label class="form__label">
+        <span>Пример — иероглифы</span>
+        <input type="text" id="exampleZhInput" maxlength="80" autocomplete="off" placeholder="например: 我看电影。">
+      </label>
+
+      <label class="form__label">
+        <span>Пример — пиньинь</span>
+        <input type="text" id="examplePinyinInput" maxlength="120" autocomplete="off" placeholder="например: wǒ kàn diàn yǐng">
+      </label>
+
+      <label class="form__label">
+        <span>Пример — перевод</span>
+        <input type="text" id="exampleRuInput" maxlength="160" autocomplete="off" placeholder="например: я смотрю фильм">
+      </label>
+
+      <div class="form__error" id="formError" hidden></div>
+
+      <div class="form__actions">
+        <button type="button" class="btn btn--secondary" id="modalCancel">
+          <i class="ri-close-line"></i><span>Отмена</span>
+        </button>
+        <button type="submit" class="btn btn--primary">
+          <i class="ri-check-line"></i><span>Сохранить</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Модалка: статистика -->
+<div class="modal" id="statsModal" hidden>
+  <div class="modal__backdrop" id="statsBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Статистика</h3>
+      <button class="mcq__close" id="statsClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="stats__grid">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--primary"><i class="ri-bookmark-3-line"></i></div>
+        <div class="stat-card__value"><span id="statLearned">0</span> / <span id="statTotal">0</span></div>
+        <div class="stat-card__label">Выучено слов</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--fire"><i class="ri-fire-line"></i></div>
+        <div class="stat-card__value"><span id="statStreak">0</span></div>
+        <div class="stat-card__label">Серия дней</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--gold"><i class="ri-award-line"></i></div>
+        <div class="stat-card__value"><span id="statBest">0</span></div>
+        <div class="stat-card__label">Рекорд серии</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--info"><i class="ri-history-line"></i></div>
+        <div class="stat-card__value"><span id="statDueCount">0</span></div>
+        <div class="stat-card__label">Пора повторить</div>
+      </div>
+    </div>
+
+    <div class="stats__section">
+      <div class="stats__section-title">
+        <i class="ri-bar-chart-2-line"></i>
+        <span>Распределение по уровням SRS</span>
+      </div>
+      <div class="srs-chart" id="srsChart"></div>
+      <div class="srs-chart-legend" id="srsChartLegend"></div>
+    </div>
+
+    <div class="stats__section">
+      <div class="stats__section-title">
+        <i class="ri-calendar-check-line"></i>
+        <span>Активность за неделю</span>
+      </div>
+      <div class="stat-week" id="statWeek"></div>
+    </div>
+
+    <div class="stats__section">
+      <div class="stats__section-title">
+        <i class="ri-alert-line"></i>
+        <span>Слабые слова</span>
+      </div>
+      <div class="stat-weak" id="statWeakList"></div>
+    </div>
+
+    <div class="stats__section">
+      <div class="stats__section-title">
+        <i class="ri-folder-3-line"></i>
+        <span>Мои разделы</span>
+      </div>
+      <div class="stats__sections" id="statSections"></div>
+      <div class="stats__sections-actions">
+        <button class="btn btn--secondary btn--danger btn--sm" id="statSectionsClearAll">
+          <i class="ri-delete-bin-6-line"></i><span>Удалить все разделы</span>
+        </button>
+      </div>
+      <div class="stats__backup-hint">
+        Разделы, которые вы создали или импортировали. Встроенные уровни HSK удалить нельзя.
+      </div>
+    </div>
+
+    <div class="stats__section">
+      <div class="stats__section-title">
+        <i class="ri-database-2-line"></i>
+        <span>Резервная копия прогресса</span>
+      </div>
+      <div class="stats__backup">
+        <button class="btn btn--secondary" id="progressExportBtn" title="Скачать JSON со всем прогрессом">
+          <i class="ri-download-2-line"></i><span>Экспорт прогресса</span>
+        </button>
+        <button class="btn btn--secondary" id="progressImportBtn" title="Загрузить JSON с прогрессом">
+          <i class="ri-upload-2-line"></i><span>Импорт прогресса</span>
+        </button>
+        <input type="file" id="progressImportInput" accept=".json,application/json" hidden>
+      </div>
+      <div class="stats__backup-hint">
+        Экспорт сохраняет прогресс, SRS-интервалы, серию дней и настройки.
+        Свои слова выгружаются отдельно — в разделе «Мои слова».
+      </div>
+    </div>
+
+    <div class="stats__actions">
+      <button class="btn btn--secondary btn--danger" id="statReset" title="Сбросить прогресс и статистику">
+        <i class="ri-delete-back-2-line"></i><span>Сбросить статистику</span>
+      </button>
+      <button class="btn btn--secondary" id="statDuePractice">
+        <i class="ri-history-line"></i><span>Повторить просроченные</span>
+      </button>
+      <button class="btn btn--primary" id="statWeakPractice">
+        <i class="ri-target-line"></i><span>Тренировать слабые</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки проверки -->
+<div class="modal" id="mcqSetupModal" hidden>
+  <div class="modal__backdrop" id="mcqSetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Начать проверку</h3>
+      <button class="mcq__close" id="mcqSetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько слов</span>
+      </div>
+      <div class="setup__options" id="setupSize">
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="0">Все</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-ordered-2"></i>
+        <span>Сколько вариантов ответа</span>
+      </div>
+      <div class="setup__options" id="setupOptionsCount">
+        <button type="button" data-value="3">3</button>
+        <button type="button" data-value="4">4</button>
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="6">6</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать</span>
+      </div>
+      <div class="setup__options setup__options--col" id="setupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="weak">
+          <i class="ri-alert-line"></i><span>Слабые слова</span>
+        </button>
+        <button type="button" data-value="due">
+          <i class="ri-history-line"></i><span>Просроченные</span>
+        </button>
+      </div>
+      <div class="setup__hint" id="setupHint">Доступно: —</div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="setupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="setupStart">
+        <i class="ri-play-fill"></i><span>Начать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки диктанта -->
+<div class="modal" id="dictationSetupModal" hidden>
+  <div class="modal__backdrop" id="dictationSetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Начать диктант</h3>
+      <button class="mcq__close" id="dictationSetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько слов</span>
+      </div>
+      <div class="setup__options" id="dictationSetupSize">
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="0">Все</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать</span>
+      </div>
+      <div class="setup__options setup__options--col" id="dictationSetupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="weak">
+          <i class="ri-alert-line"></i><span>Слабые слова</span>
+        </button>
+        <button type="button" data-value="due">
+          <i class="ri-history-line"></i><span>Просроченные</span>
+        </button>
+      </div>
+      <div class="setup__hint" id="dictationSetupHint">Доступно: —</div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="dictationSetupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="dictationSetupStart">
+        <i class="ri-play-fill"></i><span>Начать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки сессии «Писать» -->
+<div class="modal" id="writeSetupModal" hidden>
+  <div class="modal__backdrop" id="writeSetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Начать писать</h3>
+      <button class="mcq__close" id="writeSetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько слов</span>
+      </div>
+      <div class="setup__options" id="writeSetupSize">
+        <button type="button" data-value="1">1</button>
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="0">Все</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать</span>
+      </div>
+      <div class="setup__options setup__options--col" id="writeSetupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="weak">
+          <i class="ri-alert-line"></i><span>Слабые слова</span>
+        </button>
+        <button type="button" data-value="due">
+          <i class="ri-history-line"></i><span>Просроченные</span>
+        </button>
+      </div>
+      <div class="setup__hint" id="writeSetupHint">Доступно: —</div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="writeSetupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="writeSetupStart">
+        <i class="ri-play-fill"></i><span>Начать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки сессии «По памяти» -->
+<div class="modal" id="memorySetupModal" hidden>
+  <div class="modal__backdrop" id="memorySetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Начать по памяти</h3>
+      <button class="mcq__close" id="memorySetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько слов</span>
+      </div>
+      <div class="setup__options" id="memorySetupSize">
+        <button type="button" data-value="1">1</button>
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="0">Все</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать</span>
+      </div>
+      <div class="setup__options setup__options--col" id="memorySetupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="weak">
+          <i class="ri-alert-line"></i><span>Слабые слова</span>
+        </button>
+        <button type="button" data-value="due">
+          <i class="ri-history-line"></i><span>Просроченные</span>
+        </button>
+      </div>
+      <div class="setup__hint" id="memorySetupHint">Доступно: —</div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="memorySetupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="memorySetupStart">
+        <i class="ri-play-fill"></i><span>Начать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки «Повторение» (SRS) -->
+<div class="modal" id="srsSetupModal" hidden>
+  <div class="modal__backdrop" id="srsSetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Начать повторение</h3>
+      <button class="mcq__close" id="srsSetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько карточек</span>
+      </div>
+      <div class="setup__options" id="srsSetupSize">
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="50">50</button>
+        <button type="button" data-value="0">Все</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать</span>
+      </div>
+      <div class="setup__options setup__options--col" id="srsSetupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="weak">
+          <i class="ri-alert-line"></i><span>Слабые слова</span>
+        </button>
+        <button type="button" data-value="due">
+          <i class="ri-history-line"></i><span>Просроченные</span>
+        </button>
+        <button type="button" data-value="custom">
+          <i class="ri-folder-3-line"></i><span>Мои слова</span>
+        </button>
+      </div>
+      <div class="setup__hint" id="srsSetupHint">Доступно: —</div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="srsSetupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="srsSetupStart">
+        <i class="ri-play-fill"></i><span>Начать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: настройки прописей -->
+<div class="modal" id="wsSetupModal" hidden>
+  <div class="modal__backdrop" id="wsSetupBackdrop"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Конструктор прописей</h3>
+      <button class="mcq__close" id="wsSetupClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-list-check-2"></i>
+        <span>Сколько слов на лист</span>
+      </div>
+      <div class="setup__options" id="wsSetupCount">
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="15">15</button>
+        <button type="button" data-value="20">20</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-layout-grid-line"></i>
+        <span>Ячеек на слово</span>
+      </div>
+      <div class="setup__options" id="wsSetupCells">
+        <button type="button" data-value="6">6</button>
+        <button type="button" data-value="8">8</button>
+        <button type="button" data-value="10">10</button>
+        <button type="button" data-value="12">12</button>
+        <button type="button" data-value="16">16</button>
+        <button type="button" data-value="20">20</button>
+        <button type="button" data-value="auto">По чертам</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-grid-line"></i>
+        <span>Тип сетки</span>
+      </div>
+      <div class="setup__options" id="wsSetupGrid">
+        <button type="button" data-value="tian">田字格</button>
+        <button type="button" data-value="mi">米字格</button>
+        <button type="button" data-value="jiu">九宫格</button>
+        <button type="button" data-value="none">Без сетки</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-expand-vertical-line"></i>
+        <span>Размер ячейки</span>
+      </div>
+      <div class="setup__options" id="wsSetupSize">
+        <button type="button" data-value="60">Малый</button>
+        <button type="button" data-value="80">Средний</button>
+        <button type="button" data-value="100">Большой</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-text"></i>
+        <span>Подписи</span>
+      </div>
+      <div class="setup__options" id="wsSetupLabels">
+        <button type="button" data-value="pinyin">Пиньинь</button>
+        <button type="button" data-value="translation">Перевод</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-palette-line"></i>
+        <span>Цвета и обводка</span>
+      </div>
+      <div class="setup__options" id="wsSetupExtra">
+        <button type="button" data-value="color">Цветные черты</button>
+        <button type="button" data-value="ghost">Бледный контур в конце</button>
+      </div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-route-line"></i>
+        <span>Режим отображения</span>
+      </div>
+      <div class="setup__options" id="wsSetupMode">
+        <button type="button" data-value="normal">Обычный</button>
+        <button type="button" data-value="steps">Пошаговое написание</button>
+      </div>
+      <div class="setup__hint" id="wsSetupHint">Выбрано: 10 слов · 8 ячеек · 田字格 · пошаговое написание</div>
+    </div>
+
+    <div class="setup__group">
+      <div class="setup__label">
+        <i class="ri-folder-line"></i>
+        <span>Откуда брать слова</span>
+      </div>
+      <div class="setup__options setup__options--col" id="wsSetupSource">
+        <button type="button" data-value="level">
+          <i class="ri-stack-line"></i><span>Текущий уровень</span>
+        </button>
+        <button type="button" data-value="current">
+          <i class="ri-star-line"></i><span>Изучаю сейчас</span>
+        </button>
+        <button type="button" data-value="custom">
+          <i class="ri-folder-3-line"></i><span>Мои слова</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="setup__actions">
+      <button class="btn btn--secondary" id="wsSetupCancel">
+        <i class="ri-close-line"></i><span>Отмена</span>
+      </button>
+      <button class="btn btn--primary" id="wsSetupStart">
+        <i class="ri-magic-line"></i><span>Сгенерировать</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: лист прописей -->
+<div class="modal" id="wsSheetModal" hidden>
+  <div class="modal__backdrop" id="wsSheetBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head ws-toolbar">
+      <h3 class="modal__title" style="margin:0">Прописи</h3>
+      <div class="ws-toolbar__buttons">
+        <button class="btn btn--secondary btn--sm" id="wsSheetBack">
+          <i class="ri-arrow-left-line"></i><span>Назад</span>
+        </button>
+        <button class="btn btn--primary btn--sm" id="wsSheetPrint">
+          <i class="ri-printer-line"></i><span>Печать</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ws-sheet-wrap">
+      <div class="ws-sheet" id="wsSheet"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: проверка предложений -->
+<div class="modal" id="sentenceModal" hidden>
+  <div class="modal__backdrop" id="sentenceBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Проверка предложения</h3>
+      <button class="mcq__close" id="sentenceClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="sent__input-wrap">
+      <textarea
+        id="sentInput"
+        class="sent__input"
+        rows="3"
+        placeholder="Например: 我是学生。"
+        autocomplete="off"
+        spellcheck="false"
+      ></textarea>
+      <div class="sent__input-hint">
+        Подсказка: используйте слова из HSK 1. Ctrl+Enter — проверить.
+      </div>
+    </div>
+
+    <div class="sent__actions">
+      <button class="btn btn--secondary btn--sm" id="sentExample">
+        <i class="ri-lightbulb-line"></i><span>Пример</span>
+      </button>
+      <button class="btn btn--secondary btn--sm" id="sentRules" type="button" title="Правила построения предложений">
+        <i class="ri-book-2-line"></i><span>Правила</span>
+      </button>
+      <button class="btn btn--secondary btn--sm" id="sentKeyboard" type="button" title="Виртуальная клавиатура пиньинь">
+        <i class="ri-keyboard-line"></i><span>Клавиатура</span>
+      </button>
+      <button class="btn btn--secondary btn--sm" id="sentClear">
+        <i class="ri-eraser-line"></i><span>Очистить</span>
+      </button>
+      <button class="btn btn--primary btn--sm" id="sentCheck">
+        <i class="ri-check-double-line"></i><span>Проверить</span>
+      </button>
+    </div>
+
+    <div class="vk" id="vkPanel" hidden>
+      <div class="vk__head">
+        <div class="vk__title">
+          <i class="ri-keyboard-line"></i>
+          <span>Пиньинь-клавиатура</span>
+        </div>
+        <button type="button" class="mcq__close" id="vkClose" aria-label="Закрыть">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <div class="vk__compose">
+        <span class="vk__compose-label">Пиньинь:</span>
+        <span class="vk__compose-text" id="vkComposeText"></span>
+        <span class="vk__compose-caret" id="vkComposeCaret">▎</span>
+      </div>
+
+      <div class="vk__candidates" id="vkCandidates"></div>
+
+      <div class="vk__keyboard" id="vkKeyboard"></div>
+    </div>
+
+    <div class="sent__result" id="sentResult" hidden>
+      <div class="sent__result-head">
+        <i class="sent__result-icon" id="sentResultIcon"></i>
+        <span class="sent__result-status" id="sentResultStatus"></span>
+      </div>
+      <div class="sent__result-rule" id="sentResultRule"></div>
+      <div class="sent__result-explain" id="sentResultExplain"></div>
+      <div class="sent__result-rule-link-wrap">
+        <button type="button" class="sent__rule-link" id="sentResultRuleLink" hidden>
+          <i class="ri-book-2-line"></i><span>Подробнее о правиле →</span>
+        </button>
+      </div>
+      <div class="sent__result-examples" id="sentResultExamples"></div>
+      <button class="btn btn--secondary btn--sm sent__speak" id="sentSpeak">
+        <i class="ri-volume-up-line"></i><span>Озвучить</span>
+      </button>
+    </div>
+
+    <div class="sent__cheatsheet">
+      <div class="sent__cheatsheet-title">
+        <i class="ri-book-2-line"></i>
+        <span>Базовые конструкции</span>
+      </div>
+      <div class="sent__cheatsheet-item"><b>谁 есть кто:</b> 我是学生。</div>
+      <div class="sent__cheatsheet-item"><b>Отрицание:</b> 我不是学生。</div>
+      <div class="sent__cheatsheet-item"><b>Вопрос:</b> 你是学生吗？</div>
+      <div class="sent__cheatsheet-item"><b>Действие:</b> 我喝茶。</div>
+      <div class="sent__cheatsheet-item"><b>Качество:</b> 我很好。</div>
+      <div class="sent__cheatsheet-item"><b>Обладание:</b> 我有书 / 我没有书。</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: правила -->
+<div class="modal" id="rulesModal" hidden>
+  <div class="modal__backdrop" id="rulesBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Правила построения предложений</h3>
+      <button class="mcq__close" id="rulesClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="rules__intro">
+      Правила китайского предложения: <b id="rulesCount">0</b> шт. Разделены на 3 уровня:
+      <b>базовый</b> (HSK 1), <b>средний</b> (HSK 2), <b>продвинутый</b> (HSK 3+).
+    </div>
+
+    <div class="rules__list" id="rulesList"></div>
+
+  </div>
+</div>
+
+<!-- Модалка: Диктант -->
+<div class="modal" id="dictationModal" hidden>
+  <div class="modal__backdrop" id="dictationBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+    <div id="dictationView" hidden>
+      <div class="dictation">
+        <div class="dictation__head">
+          <div class="mcq__progress" id="dictationProgress">1 / 10</div>
+          <button class="mcq__close" id="dictationClose" aria-label="Закрыть">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="mcq__bar"><div class="mcq__bar-fill" id="dictationBar"></div></div>
+
+        <div id="dictationBody">
+          <div class="dictation__label">Прослушайте и напишите иероглифы:</div>
+          <div class="dictation__translation" id="dictationTranslation">—</div>
+          <div class="dictation__pinyin-hint" id="dictationPinyinHint" hidden></div>
+
+          <div class="dictation__row">
+            <button class="dictation__replay" id="dictationReplay" title="Повторить">
+              <i class="ri-volume-up-line"></i>
+            </button>
+            <input type="text" class="dictation__input" id="dictationInput" placeholder="введите иероглифы…" autocomplete="off">
+            <button class="btn btn--secondary btn--sm dictation__keyboard-btn" id="dictationKeyboard" type="button" title="Виртуальная клавиатура (только на компьютере)">
+              <i class="ri-keyboard-line"></i><span>Клавиатура</span>
+            </button>
+            <button class="btn btn--primary btn--sm" id="dictationCheck">
+              <i class="ri-check-line"></i><span>Проверить</span>
+            </button>
+          </div>
+
+          <div class="dictation__secondary-row">
+            <button class="btn btn--secondary btn--sm" id="dictationDontKnow" type="button" title="Показать правильный ответ">
+              <i class="ri-eye-line"></i><span>Не знаю</span>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="dictationSkip" type="button" title="Отложить и вернуться позже">
+              <i class="ri-skip-forward-line"></i><span>Пропустить</span>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="dictationPinyinToggle" type="button" title="Показать или скрыть пиньинь">
+              <i class="ri-eye-line"></i><span>Пиньинь</span>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="dictationTranslate" type="button" title="Пример употребления: иероглифы и пиньинь">
+              <i class="ri-book-2-line"></i><span>Пример</span>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="dictationSpeakExample" type="button" title="Озвучить пример употребления">
+              <i class="ri-chat-voice-line"></i><span>Озвучить пример</span>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="dictationHint" type="button" title="Подсказка">
+              <i class="ri-lightbulb-line"></i><span>Подсказка</span>
+            </button>
+          </div>
+
+          <div class="quiz-hint" id="dictationHintPanel" hidden></div>
+
+          <div class="dictation__status" id="dictationStatus"></div>
+
+          <div class="vk" id="dictationVkPanel" hidden>
+            <div class="vk__head">
+              <div class="vk__title">
+                <i class="ri-keyboard-line"></i>
+                <span>Пиньинь-клавиатура</span>
+              </div>
+              <button type="button" class="mcq__close" id="dictationVkClose" aria-label="Закрыть">
+                <i class="ri-close-line"></i>
+              </button>
+            </div>
+            <div class="vk__compose">
+              <span class="vk__compose-label">Пиньинь:</span>
+              <span class="vk__compose-text" id="dictationVkComposeText"></span>
+              <span class="vk__compose-caret" id="dictationVkComposeCaret">▎</span>
+            </div>
+            <div class="vk__candidates" id="dictationVkCandidates"></div>
+            <div class="vk__keyboard" id="dictationVkKeyboard"></div>
+          </div>
+        </div>
+
+        <div class="mcq-result" id="dictationResult" hidden>
+          <div class="mcq-result__icon" id="dictationResultIcon"><i class="ri-award-line"></i></div>
+          <div class="mcq-result__title" id="dictationResultTitle">Готово!</div>
+          <div class="mcq-result__score" id="dictationResultScore">0 / 10</div>
+          <div class="mcq-result__actions">
+            <button class="btn btn--secondary" id="dictationExit"><i class="ri-arrow-left-line"></i><span>К словам</span></button>
+            <button class="btn btn--primary" id="dictationRestart"><i class="ri-refresh-line"></i><span>Ещё раз</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: Пропуски -->
+<div class="modal" id="clozeModal" hidden>
+  <div class="modal__backdrop" id="clozeBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+    <div id="clozeView" hidden>
+      <div class="cloze">
+        <div class="cloze__head">
+          <div class="mcq__progress" id="clozeProgress">1 / 8</div>
+          <button class="mcq__close" id="clozeClose" aria-label="Закрыть">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="mcq__bar"><div class="mcq__bar-fill" id="clozeBar"></div></div>
+
+        <div id="clozeBody">
+          <div class="cloze__sentence" id="clozeSentence">—</div>
+          <div class="cloze__translation" id="clozeTranslation"></div>
+
+          <div class="quiz-tools" id="clozeTools" hidden>
+            <button type="button" class="quiz-tool" id="clozeHintBtn" title="Показать чтение, перевод и правильный иероглиф">
+              <i class="ri-lightbulb-line"></i><span>Подсказка</span>
+            </button>
+          </div>
+
+          <div class="quiz-hint" id="clozeHintPanel" hidden></div>
+
+          <div class="cloze__options" id="clozeOptions"></div>
+          <div class="cloze__status" id="clozeStatus"></div>
+        </div>
+
+        <div class="mcq-result" id="clozeResult" hidden>
+          <div class="mcq-result__icon" id="clozeResultIcon"><i class="ri-award-line"></i></div>
+          <div class="mcq-result__title" id="clozeResultTitle">Готово!</div>
+          <div class="mcq-result__score" id="clozeResultScore">0 / 8</div>
+          <div class="mcq-result__actions">
+            <button class="btn btn--secondary" id="clozeExit"><i class="ri-arrow-left-line"></i><span>К словам</span></button>
+            <button class="btn btn--primary" id="clozeRestart"><i class="ri-refresh-line"></i><span>Ещё раз</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: Изучение пошагово -->
+<div class="modal" id="learnModal" hidden>
+  <div class="modal__backdrop" id="learnBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Изучение пошагово</h3>
+      <button class="mcq__close" id="learnClose" aria-label="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="learn__info">
+      <div class="learn__info-pinyin" id="learnPinyin">—</div>
+      <div class="learn__info-translation" id="learnTranslation">—</div>
+    </div>
+
+    <div class="learn__chars" id="learnChars"></div>
+
+    <div class="learn__controls">
+      <button class="btn btn--secondary btn--sm" id="learnAudio">
+        <i class="ri-volume-up-line"></i><span>Озвучить</span>
+      </button>
+      <button class="btn btn--secondary btn--sm" id="learnReset">
+        <i class="ri-refresh-line"></i><span>Сброс</span>
+      </button>
+      <button class="btn btn--primary btn--sm" id="learnPlay">
+        <i class="ri-play-fill"></i><span>Играть</span>
+      </button>
+      <button class="btn btn--secondary btn--sm" id="learnNext">
+        <span>Черта</span><i class="ri-arrow-right-line"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: Повторение (SRS) -->
+<div class="modal" id="srsModal" hidden>
+  <div class="modal__backdrop" id="srsBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div id="srsView" hidden>
+      <div class="srs">
+        <div class="srs__head">
+          <div class="mcq__progress" id="srsProgress">0 / 0</div>
+          <button class="mcq__close" id="srsClose" aria-label="Закрыть">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="mcq__bar"><div class="mcq__bar-fill" id="srsBar"></div></div>
+
+        <div id="srsBody">
+          <div class="srs__card" id="srsCard">
+            <div class="srs__level" id="srsLevel">Новое</div>
+            <div class="srs__word" id="srsWord">—</div>
+            <div class="srs__pinyin srs__pinyin--hidden" id="srsPinyin">—</div>
+            <div class="srs__translation srs__translation--hidden" id="srsTranslation">—</div>
+          </div>
+
+          <div class="srs__actions" id="srsReveal">
+            <button class="btn btn--primary" id="srsRevealBtn">
+              <i class="ri-eye-line"></i><span>Показать ответ</span>
+            </button>
+            <button class="btn btn--secondary" id="srsAudioBtn" title="Озвучить">
+              <i class="ri-volume-up-line"></i>
+            </button>
+          </div>
+
+          <div class="srs__ratings" id="srsRatings" hidden>
+            <div class="srs__ratings-hint">Насколько хорошо вы знали слово?</div>
+            <div class="srs__ratings-grid">
+              <button class="srs__rating srs__rating--again" data-rating="0" type="button">
+                <i class="ri-close-line"></i>
+                <span>Не знаю</span>
+                <small id="srsInterval0">—</small>
+              </button>
+              <button class="srs__rating srs__rating--hard" data-rating="1" type="button">
+                <i class="ri-emotion-sad-line"></i>
+                <span>Трудно</span>
+                <small id="srsInterval1">—</small>
+              </button>
+              <button class="srs__rating srs__rating--good" data-rating="2" type="button">
+                <i class="ri-emotion-normal-line"></i>
+                <span>Нормально</span>
+                <small id="srsInterval2">—</small>
+              </button>
+              <button class="srs__rating srs__rating--easy" data-rating="3" type="button">
+                <i class="ri-emotion-happy-line"></i>
+                <span>Легко</span>
+                <small id="srsInterval3">—</small>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mcq-result" id="srsResult" hidden>
+          <div class="mcq-result__icon" id="srsResultIcon"><i class="ri-award-line"></i></div>
+          <div class="mcq-result__title" id="srsResultTitle">Готово!</div>
+          <div class="mcq-result__score" id="srsResultScore">0 / 0</div>
+          <div class="mcq-result__actions">
+            <button class="btn btn--secondary" id="srsExit">
+              <i class="ri-arrow-left-line"></i><span>К словам</span>
+            </button>
+            <button class="btn btn--primary" id="srsRestart">
+              <i class="ri-refresh-line"></i><span>Ещё раз</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Модалка: справка по импорту -->
+<div class="modal" id="importHelpModal" hidden>
+  <div class="modal__backdrop" id="importHelpBackdrop"></div>
+  <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true">
+
+    <div class="stats__head">
+      <h3 class="modal__title" style="margin:0">Как добавить свои слова</h3>
+      <button class="mcq__close" id="importHelpClose" aria-label="Закрыть" title="Закрыть">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <div class="import-help">
+
+      <p class="import-help__lead">
+        Приложение поддерживает три способа пополнить словарик своими словами.
+      </p>
+
+      <div class="import-help__methods">
+        <div class="import-method">
+          <div class="import-method__num">1</div>
+          <div class="import-method__body">
+            <div class="import-method__title">Вручную</div>
+            <div class="import-method__text">
+              Нажмите <b>«Добавить слово»</b> в разделе «Мои слова» — откроется форма.
+              Заполните иероглифы, пиньинь, перевод и (по желанию) пример употребления.
+            </div>
+          </div>
+        </div>
+
+        <div class="import-method">
+          <div class="import-method__num">2</div>
+          <div class="import-method__body">
+            <div class="import-method__title">Через готовый шаблон</div>
+            <div class="import-method__text">
+              Нажмите <b>«Шаблон»</b> — скачается файл
+              <code>hanzipath-template.json</code> с примерами и подсказками.
+              Отредактируйте его в любом редакторе и загрузите через <b>«Импорт»</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="import-method">
+          <div class="import-method__num">3</div>
+          <div class="import-method__body">
+            <div class="import-method__title">Свой JSON-файл</div>
+            <div class="import-method__text">
+              Создайте массив объектов по схеме ниже — и загрузите его
+              через кнопку <b>«Импорт»</b>. Поддерживаются два формата:
+              массив слов или <code>{ "section": "…", "words": […] }</code> —
+              второй создаёт отдельный раздел.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="import-help__subtitle">Схема JSON</h4>
+
+      <div class="import-help__code">
+<pre><code><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="k">"word"</span><span class="p">:</span> <span class="s">"包子"</span><span class="p">,</span>
+    <span class="k">"pinyin"</span><span class="p">:</span> <span class="s">"bāo zi"</span><span class="p">,</span>
+    <span class="k">"translation"</span><span class="p">:</span> <span class="s">"баоцзы (паровые пирожки)"</span><span class="p">,</span>
+    <span class="k">"examples"</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="k">"zh"</span><span class="p">:</span> <span class="s">"我早上吃包子。"</span><span class="p">,</span>
+        <span class="k">"pinyin"</span><span class="p">:</span> <span class="s">"wǒ zǎo shang chī bāo zi"</span><span class="p">,</span>
+        <span class="k">"ru"</span><span class="p">:</span> <span class="s">"утром я ем баоцзы"</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">]</span></code></pre>
+      </div>
+
+      <h4 class="import-help__subtitle">Поля слова</h4>
+
+      <div class="import-help__fields">
+        <div class="field-row">
+          <code>word</code>
+          <span class="field-row__required">обязательно</span>
+          <span class="field-row__desc">китайские иероглифы</span>
+        </div>
+        <div class="field-row">
+          <code>translation</code>
+          <span class="field-row__required">обязательно</span>
+          <span class="field-row__desc">перевод на русский</span>
+        </div>
+        <div class="field-row">
+          <code>pinyin</code>
+          <span class="field-row__optional">опционально</span>
+          <span class="field-row__desc">пиньинь с тонами: <em>bāo zi</em></span>
+        </div>
+        <div class="field-row">
+          <code>examples</code>
+          <span class="field-row__optional">опционально</span>
+          <span class="field-row__desc">массив предложений — включает режимы «Пропуски» и «Диктант»</span>
+        </div>
+      </div>
+
+      <h4 class="import-help__subtitle">Поля примера предложения</h4>
+
+      <div class="import-help__fields">
+        <div class="field-row">
+          <code>zh</code>
+          <span class="field-row__required">обязательно</span>
+          <span class="field-row__desc">предложение на китайском</span>
+        </div>
+        <div class="field-row">
+          <code>pinyin</code>
+          <span class="field-row__optional">опционально</span>
+          <span class="field-row__desc">пиньинь предложения</span>
+        </div>
+        <div class="field-row">
+          <code>ru</code>
+          <span class="field-row__optional">опционально</span>
+          <span class="field-row__desc">перевод на русский</span>
+        </div>
+      </div>
+
+      <h4 class="import-help__subtitle">Советы</h4>
+
+      <ul class="import-help__tips">
+        <li>Сохраняйте файл в кодировке <b>UTF-8</b> — иначе иероглифы превратятся в «кракозябры».</li>
+        <li>Импорт можно запускать <b>многократно</b>. Слова с одинаковыми иероглифами обновляются, новые — добавляются.</li>
+        <li>Формат <code>{ "section": "…", "words": […] }</code> создаёт <b>отдельный раздел</b> — его можно удалить в статистике.</li>
+        <li>Записи с полями <code>_comment</code>, <code>_readme</code>, <code>_schema</code> игнорируются — их можно оставлять для документации.</li>
+      </ul>
+
+      <div class="import-help__actions">
+        <button type="button" class="btn btn--secondary" id="importHelpDownload">
+          <i class="ri-file-text-line"></i><span>Скачать шаблон</span>
+        </button>
+        <button type="button" class="btn btn--primary" id="importHelpClose2">
+          <i class="ri-check-line"></i><span>Понятно</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/pinyin.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/data-hsk-advanced.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/audio.js"></script>
+<script src="assets/js/ime.js"></script>
+<script src="assets/js/sentences.js"></script>
+<script src="assets/js/dictation.js"></script>
+<script src="assets/js/cloze.js"></script>
+<script src="assets/js/learn.js"></script>
+<script src="assets/js/writer.js"></script>
+<script src="assets/js/quiz.js"></script>
+<script src="assets/js/quiz-mcq.js"></script>
+<script src="assets/js/trace.js"></script>
+<script src="assets/js/stats.js"></script>
+<script src="assets/js/srs.js"></script>
+<script src="assets/js/worksheets.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
