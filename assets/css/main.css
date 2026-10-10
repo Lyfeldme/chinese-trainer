@@ -37,7 +37,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding: 0 60px 0 0px;   /* справа 60px — место под кнопку темы (40px) + отступ */
+  padding: 0 0px;   /* без отступов — логотип прижат к левому краю */
 }
 .app__title { font-size: 22px; font-weight: 700; line-height: 1.15; }
 .app__subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; }
@@ -226,7 +226,8 @@ body {
 
   .card { padding: 18px; border-radius: 14px; }
 
-  .app__header { padding: 0 40px; margin-bottom: 14px; }
+  /* Без отступов — логотип прижат к левому краю */
+  .app__header { padding: 0 0px; margin-bottom: 14px; }
   .app__title { font-size: 20px; }
   .app__subtitle { font-size: 13px; }
 
@@ -258,7 +259,8 @@ body {
 
   .card { padding: 14px; border-radius: 12px; }
 
-  .app__header { padding: 0 36px; }
+  /* Без отступов — логотип прижат к левому краю */
+  .app__header { padding: 0 0px; }
   .app__title { font-size: 18px; }
   .app__subtitle { font-size: 12px; }
 
